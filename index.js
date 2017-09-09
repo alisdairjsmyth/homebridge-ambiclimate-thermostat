@@ -46,7 +46,8 @@ function AmbiClimate(log, config) {
     this.state              = {};
     this.state.on           = false;
 
-    this.thermostatService = new Service.Thermostat(this.name);
+    this.thermostatService  = new Service.Thermostat(this.name);
+    this.informationService = new Service.AccessoryInformation();
 }
 
 AmbiClimate.prototype = {
