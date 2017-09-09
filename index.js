@@ -105,7 +105,6 @@ AmbiClimate.prototype = {
           }
           var mode     = data.mode;
           var modeTemp = data.value;
-          this.log("Retrieved mode is " + mode);
 
           switch(mode) {
               case "Comfort":
