@@ -71,8 +71,10 @@ AmbiClimate.prototype = {
                 case "Comfort":
                 case "Away_Temperature_Upper":
                     callback(err, Characteristic.CurrentHeatingCoolingState.COOL);
+                    break;
                 case "Away_Temperature_Lower":
                     callback(err, Characteristic.CurrentHeatingCoolingState.HEAT);
+                    break;
                 case "Temperature":
                     this.client.sensor_temperature(accessory.settings, function (err, data) {
                         if (err) {
@@ -85,9 +87,11 @@ AmbiClimate.prototype = {
                         } else {
                           callback(err, Characteristic.CurrentHeatingCoolingState.HEAT);
                         }
-                    })
+                    });
+                    break;
                 default:
                     callback(err, Characteristic.CurrentHeatingCoolingState.OFF);
+                    break;
             }
         })
     },
@@ -109,12 +113,16 @@ AmbiClimate.prototype = {
               case "Comfort":
               case "Temperature":
                   callback(err, Characteristic.TargetHeatingCoolingState.AUTO);
+                  break;
               case "Away_Temperature_Upper":
                   callback(err, Characteristic.TargetHeatingCoolingState.COOL);
+                  break;
               case "Away_Temperature_Lower":
                   callback(err, Characteristic.TargetHeatingCoolingState.HEAT);
+                  break;
               default:
                   callback(err, Characteristic.TargetHeatingCoolingState.OFF);
+                  break;
           }
       })
     },
@@ -130,18 +138,22 @@ AmbiClimate.prototype = {
                 this.client.comfort(this.settings, function(err, data) {
                     callback(err);
                 });
+                break;
             case Characteristic.TargetHeatingCoolingState.COOL:
                 this.client.away_temperature_upper(this.settings, function(err, data) {
                     callback(err);
                 });
+                break;
             case Characteristic.TargetHeatingCoolingState.HEAT:
                 this.client.away_temperature_lower(this.settings, function(err, data) {
                     callback(err);
                 });
+                break;
             default:
                 this.client.off(this.settings, function(err, data) {
                     callback(err);
                 });
+                break;
         }
     },
 
@@ -164,8 +176,10 @@ AmbiClimate.prototype = {
               case "Away_Temperature_Upper":
               case "Away_Temperature_Lower":
                   callback(null, modeTemp);
+                  break;
               default:
                   callback(null, 22);
+                  break;
           }
       })
     },
@@ -188,16 +202,20 @@ AmbiClimate.prototype = {
                     this.client.temperature(this.client.settings, function(err,data) {
                         callback(err);
                     });
+                    break;
                 case "Away_Temperature_Upper":
                     this.client.away_temperature_upper(this.client.settings, function(err,data) {
                         callback(err);
                     });
+                    break;
                 case "Away_Temperature_Lower":
                     this.client.away_temperature_lower(this.client.settings, function(err,data) {
                         callback(err);
                     });
+                    break;
                 default:
                     callback(null);
+                    break;
             }
         });
     },
