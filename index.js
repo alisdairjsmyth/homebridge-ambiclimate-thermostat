@@ -148,7 +148,7 @@ AmbiClimate.prototype = {
     },
 
     getCurrentTemperature: function(callback) {
-        accessory.client.sensor_temperature(accessory.settings, function (err, data) {
+        this.client.sensor_temperature(this.settings, function (err, data) {
             (err) ? callback(err, null) : callback(err, data[0].value);
         });
     },
