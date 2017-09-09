@@ -168,7 +168,8 @@ AmbiClimate.prototype = {
               default:
                   callback(null, 22);
           }
-    }),
+      })
+    },
 
     //
     // Set the target temperature using the current Ambi Climate mode. A
