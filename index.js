@@ -199,7 +199,7 @@ AmbiClimate.prototype = {
                 default:
                     callback(null);
             }
-        }
+        });
     },
 
     getTemperatureDisplayUnits: function(callback) {
