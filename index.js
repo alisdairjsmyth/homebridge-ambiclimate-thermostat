@@ -168,7 +168,7 @@ AmbiClimate.prototype = {
               default:
                   callback(null, 22);
           }
-    },
+    }),
 
     //
     // Set the target temperature using the current Ambi Climate mode. A
@@ -185,15 +185,15 @@ AmbiClimate.prototype = {
             this.client.settings.value = value;
             switch(mode) {
                 case "Temperature":
-                    this.client.temperature(this.client.settings.value, function(err,data) {
+                    this.client.temperature(this.client.settings, function(err,data) {
                         callback(err);
                     });
                 case "Away_Temperature_Upper":
-                    this.client.away_temperature_upper(this.client.settings.value, function(err,data) {
+                    this.client.away_temperature_upper(this.client.settings, function(err,data) {
                         callback(err);
                     });
                 case "Away_Temperature_Lower":
-                    this.client.away_temperature_lower(this.client.settings.value, function(err,data) {
+                    this.client.away_temperature_lower(this.client.settings, function(err,data) {
                         callback(err);
                     });
                 default:
