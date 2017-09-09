@@ -129,20 +129,20 @@ AmbiClimate.prototype = {
         switch(value) {
             case Characteristic.TargetHeatingCoolingState.AUTO:
                 this.client.comfort(this.settings, function(err, data) {
-                    callback(err, data);
-                }
+                    callback(err);
+                });
             case Characteristic.TargetHeatingCoolingState.COOL:
                 this.client.away_temperature_upper(this.settings, function(err, data) {
-                    callback(err, data);
-                }
+                    callback(err);
+                });
             case Characteristic.TargetHeatingCoolingState.HEAT:
                 this.client.away_temperature_lower(this.settings, function(err, data) {
-                    callback(err, data);
-                }
+                    callback(err);
+                });
             default:
                 this.client.off(this.settings, function(err, data) {
-                    callback(err, data);
-                }
+                    callback(err);
+                });
         }
     },
 
