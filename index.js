@@ -204,7 +204,7 @@ AmbiClimate.prototype = {
     },
 
     getTemperatureDisplayUnits: function(callback) {
-        callback(null, 0);
+        callback(null, Characteristic.TemperatureDisplayUnits.CELSIUS);
     },
 
     getCurrentRelativeHumidity: function(callback) {
@@ -232,10 +232,10 @@ AmbiClimate.prototype = {
             .on('set', this.setTargetTemperature.bind(this));
 
         this.thermostatService.getCharacteristic(Characteristic.TemperatureDisplayUnits)
-            .on('get', getTemperatureDisplayUnits.bind(this));
+            .on('get', this.getTemperatureDisplayUnits.bind(this));
 
         this.thermostatService.getCharacteristic(Characteristic.CurrentRelativeHumidity)
-            .on('get', getCurrentRelativeHumidity.bind(this));
+            .on('get', this.getCurrentRelativeHumidity.bind(this));
 
      		this.informationService
     			.setCharacteristic(Characteristic.Manufacturer, "Ambi Labs")
