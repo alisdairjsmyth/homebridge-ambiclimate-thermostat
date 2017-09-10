@@ -47,7 +47,7 @@ function AmbiClimate(log, config) {
     this.state.on           = false;
 
     this.thermostatService  = new Service.Thermostat(this.name);
-    this.informationService = new Service.AccessoryInformation();
+    this.informationService = new Service.AccessoryInformation(this.name);
 }
 
 AmbiClimate.prototype = {
@@ -99,7 +99,7 @@ AmbiClimate.prototype = {
                     callback(err, Characteristic.CurrentHeatingCoolingState.OFF);
                     break;
             }
-        })
+        }).bind(this)
     },
 
     //
@@ -134,7 +134,7 @@ AmbiClimate.prototype = {
                   callback(err, Characteristic.TargetHeatingCoolingState.OFF);
                   break;
           }
-      })
+      }).bind(this)
     },
 
     //
