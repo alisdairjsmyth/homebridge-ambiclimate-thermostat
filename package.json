@@ -1,6 +1,6 @@
 {
   "name": "homebridge-ambiclimate-thermostat",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "Ambi Climate Thermostat accessory plugin for Homebridge",
   "author": {
     "name": "Alisdair Smyth",
