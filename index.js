@@ -60,46 +60,48 @@ AmbiClimate.prototype = {
         // Temperature mode is mapped by comparing current temperature with
         // the set temperature.
         //
-        this.client.mode(this.settings, function(err, data) {
-            if (err) {
-                callback(err);
-            }
-            var mode     = data.mode;
-            var modeTemp = data.value;
+        this.client.mode(this.settings)
+        .then(  (data) => {
+          var mode     = data.mode;
+          var modeTemp = data.value;
 
-            this.log("getCurrentHeatingCoolingState: Current Ambi Climate mode is " + mode);
-            switch(mode) {
-                case "Comfort":
-                case "Away_Temperature_Upper":
-                    this.log("getCurrentHeatingCoolingState: Current state is COOL");
-                    callback(err, Characteristic.CurrentHeatingCoolingState.COOL);
-                    break;
-                case "Away_Temperature_Lower":
-                    this.log("getCurrentHeatingCoolingState: Current state is HEAT");
-                    callback(err, Characteristic.CurrentHeatingCoolingState.HEAT);
-                    break;
-                case "Temperature":
-                    this.client.sensor_temperature(accessory.settings, function (err, data) {
-                        if (err) {
-                          callback(err);
-                        }
-                        var temp = data[0].value;
+          this.log("getCurrentHeatingCoolingState: Current Ambi Climate mode is " + mode);
+          switch(mode) {
+              case "Comfort":
+              case "Away_Temperature_Upper":
+                  this.log("getCurrentHeatingCoolingState: Current state is COOL");
+                  callback(null, Characteristic.CurrentHeatingCoolingState.COOL);
+                  break;
+              case "Away_Temperature_Lower":
+                  this.log("getCurrentHeatingCoolingState: Current state is HEAT");
+                  callback(null, Characteristic.CurrentHeatingCoolingState.HEAT);
+                  break;
+              case "Temperature":
+                  this.client.sensor_temperature(this.settings)
+                  .then( (data) => {
+                      var temp = data[0].value;
 
-                        if (temp > modeTemp) {
-                          this.log("getCurrentHeatingCoolingState: Current state is COOL");
-                          callback(err, Characteristic.CurrentHeatingCoolingState.COOL);
-                        } else {
-                          this.log("getCurrentHeatingCoolingState: Current state is HEAT");
-                          callback(err, Characteristic.CurrentHeatingCoolingState.HEAT);
-                        }
-                    });
-                    break;
-                default:
-                    this.log("getCurrentHeatingCoolingState: Current state is OFF");
-                    callback(err, Characteristic.CurrentHeatingCoolingState.OFF);
-                    break;
-            }
-        }).bind(this)
+                      if (temp > modeTemp) {
+                        this.log("getCurrentHeatingCoolingState: Current state is COOL");
+                        callback(null, Characteristic.CurrentHeatingCoolingState.COOL);
+                      } else {
+                        this.log("getCurrentHeatingCoolingState: Current state is HEAT");
+                        callback(null, Characteristic.CurrentHeatingCoolingState.HEAT);
+                      }
+                  })
+                  .catch ( (reason) => {
+                      callback(reason);
+                  })
+                  break;
+              default:
+                  this.log("getCurrentHeatingCoolingState: Current state is OFF");
+                  callback(null, Characteristic.CurrentHeatingCoolingState.OFF);
+                  break;
+          }
+        })
+        .catch( (reason) => {
+            callback(reason);
+        })
     },
 
     //
@@ -108,10 +110,8 @@ AmbiClimate.prototype = {
     // Target Heating Cooling State is set to AUTO.
     //
     getTargetHeatingCoolingState: function(callback) {
-      this.client.mode(this.settings, function(err, data) {
-          if (err) {
-              callback(err);
-          }
+      this.client.mode(this.settings)
+      .then( (data) => {
           var mode     = data.mode;
           var modeTemp = data.value;
 
@@ -119,22 +119,25 @@ AmbiClimate.prototype = {
               case "Comfort":
               case "Temperature":
                   this.log("getTargetHeatingCoolingState: Current state is AUTO");
-                  callback(err, Characteristic.TargetHeatingCoolingState.AUTO);
+                  callback(null, Characteristic.TargetHeatingCoolingState.AUTO);
                   break;
               case "Away_Temperature_Upper":
                   this.log("getTargetHeatingCoolingState: Current state is COOL");
-                  callback(err, Characteristic.TargetHeatingCoolingState.COOL);
+                  callback(null, Characteristic.TargetHeatingCoolingState.COOL);
                   break;
               case "Away_Temperature_Lower":
                   this.log("getTargetHeatingCoolingState: Current state is HEAT");
-                  callback(err, Characteristic.TargetHeatingCoolingState.HEAT);
+                  callback(null, Characteristic.TargetHeatingCoolingState.HEAT);
                   break;
               default:
                   this.log("getTargetHeatingCoolingState: Current state is OFF");
-                  callback(err, Characteristic.TargetHeatingCoolingState.OFF);
+                  callback(null, Characteristic.TargetHeatingCoolingState.OFF);
                   break;
           }
-      }).bind(this)
+      })
+      .catch( (reason) => {
+          callback(reason);
+      })
     },
 
     //
@@ -146,42 +149,48 @@ AmbiClimate.prototype = {
         switch(value) {
             case Characteristic.TargetHeatingCoolingState.AUTO:
                 this.log("setTargetHeatingCoolingState: Setting to Comfort");
-                this.client.comfort(this.settings, function(err, data) {
-                    callback(err);
+                this.client.comfort(this.settings)
+                .catch( (reason) => {
+                    callback(reason);
                 });
                 break;
             case Characteristic.TargetHeatingCoolingState.COOL:
                 this.log("setTargetHeatingCoolingState: Setting to Away Temperature Upper");
-                this.client.away_temperature_upper(this.settings, function(err, data) {
-                    callback(err);
+                this.client.away_temperature_upper(this.settings)
+                .catch( (reason) => {
+                    callback(reason);
                 });
                 break;
             case Characteristic.TargetHeatingCoolingState.HEAT:
                 this.log("setTargetHeatingCoolingState: Setting to Away Temperature Lower");
-                this.client.away_temperature_lower(this.settings, function(err, data) {
-                    callback(err);
+                this.client.away_temperature_lower(this.settings)
+                .catch( (reason) => {
+                    callback(reason);
                 });
                 break;
             default:
                 this.log("setTargetHeatingCoolingState: Setting to Off");
-                this.client.off(this.settings, function(err, data) {
-                    callback(err);
+                this.client.off(this.settings)
+                .catch( (reason) => {
+                    callback(reason);
                 });
                 break;
         }
     },
 
     getCurrentTemperature: function(callback) {
-        this.client.sensor_temperature(this.settings, function (err, data) {
-            (err) ? callback(err, null) : callback(err, data[0].value);
+        this.client.sensor_temperature(this.settings)
+        .then( (data) => {
+            callback(null, data[0].value)
+        })
+        .catch( (reason) => {
+            callback(reason)
         });
     },
 
     getTargetTemperature: function(callback) {
-      this.client.mode(this.settings, function(err, data) {
-          if (err) {
-              callback(err);
-          }
+      this.client.mode(this.settings)
+      .then( (data) => {
           var mode     = data.mode;
           var modeTemp = data.value;
 
@@ -196,6 +205,9 @@ AmbiClimate.prototype = {
                   break;
           }
       })
+      .catch( (reason) => {
+          callback(reason);
+      });
     },
 
     //
@@ -204,33 +216,38 @@ AmbiClimate.prototype = {
     // Temperature modes.
     //
     setTargetTemperature: function(value, callback) {
-        this.client.mode(this.settings, function(err, data) {
-            if (err) {
-                callback(err);
-            }
-            var mode     = data.mode;
+        this.client.mode(this.settings)
+        .then( (data) => {
+          var mode     = data.mode;
 
-            this.client.settings.value = value;
-            switch(mode) {
-                case "Temperature":
-                    this.client.temperature(this.client.settings, function(err,data) {
-                        callback(err);
-                    });
-                    break;
-                case "Away_Temperature_Upper":
-                    this.client.away_temperature_upper(this.client.settings, function(err,data) {
-                        callback(err);
-                    });
-                    break;
-                case "Away_Temperature_Lower":
-                    this.client.away_temperature_lower(this.client.settings, function(err,data) {
-                        callback(err);
-                    });
-                    break;
-                default:
-                    callback(null);
-                    break;
-            }
+          this.client.settings.value = value;
+          switch(mode) {
+              case "Temperature":
+                  this.client.temperature(this.client.settings)
+                  .catch( (reason) => {
+                    callback(reason);
+                  });
+                  break;
+              case "Away_Temperature_Upper":
+                  this.client.away_temperature_upper(this.client.settings)
+                  .catch( (reason) => {
+                    callback(reason);
+                  });
+                  break;
+              case "Away_Temperature_Lower":
+                  this.client.away_temperature_lower(this.client.settings)
+                  .catch( (reason) => {
+                    callback(reason);
+                  });
+                  break;
+              default:
+                  callback(null);
+                  break;
+          }
+
+        })
+        .catch( (reason) => {
+          callback(reason);
         });
     },
 
@@ -239,8 +256,12 @@ AmbiClimate.prototype = {
     },
 
     getCurrentRelativeHumidity: function(callback) {
-        this.client.sensor_humidity(this.settings, function (err, data) {
-            (err) ? callback(err) : callback(err, data[0].value);
+        this.client.sensor_humidity(this.settings)
+        .then( (data) => {
+          callback(null, data[0].value);
+        })
+        .catch ( (reason) => {
+          callback(reason);
         });
     },
 
