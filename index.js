@@ -160,10 +160,8 @@ AmbiClimate.prototype = {
       case Characteristic.TargetHeatingCoolingState.COOL:
         this.log("setTargetHeatingCoolingState: Setting to Away Temperature Upper");
         this.settings.value = 22;
-        this.log("setTargetHeatingCoolingState: this.settings - " + JSON.stringify(this.settings));
         this.client.away_temperature_upper(this.settings)
           .then( (body) => {
-            this.log("setTargetHeatingCoolingState: body - " + JSON.stringify(body));
             callback(null, body);
           })
           .catch( (reason) => {
@@ -173,10 +171,8 @@ AmbiClimate.prototype = {
       case Characteristic.TargetHeatingCoolingState.HEAT:
         this.log("setTargetHeatingCoolingState: Setting to Away Temperature Lower");
         this.settings.value = 22;
-        this.log("setTargetHeatingCoolingState: this.settings - " + JSON.stringify(this.settings));
         this.client.away_temperature_lower(this.settings)
           .then( (body) => {
-            this.log("setTargetHeatingCoolingState: body - " + JSON.stringify(body));
             callback(null, body);
           })
           .catch( (reason) => {
@@ -194,6 +190,7 @@ AmbiClimate.prototype = {
           });
         break;
     }
+    this.thermostatService.setCharacteristic(Characteristic.TargetTemperature, 22);
   },
 
   getCurrentTemperature: function(callback) {
@@ -237,10 +234,10 @@ AmbiClimate.prototype = {
       .then( (data) => {
         var mode     = data.mode;
 
-        this.client.settings.value = value;
+        this.settings.value = value;
         switch(mode) {
           case "Temperature":
-            this.client.temperature(this.client.settings)
+            this.client.temperature(this.settings)
               .then( (body) => {
                 callback(null, body);
               })
@@ -249,7 +246,7 @@ AmbiClimate.prototype = {
               });
               break;
           case "Away_Temperature_Upper":
-            this.client.away_temperature_upper(this.client.settings)
+            this.client.away_temperature_upper(this.settings)
               .then( (body) => {
                 callback(null, body);
               })
@@ -258,7 +255,7 @@ AmbiClimate.prototype = {
               });
             break;
           case "Away_Temperature_Lower":
-            this.client.away_temperature_lower(this.client.settings)
+            this.client.away_temperature_lower(this.settings)
               .then( (body) => {
                 callback(null, body);
               })
