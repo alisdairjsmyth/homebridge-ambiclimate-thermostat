@@ -9,6 +9,8 @@
 * Target temperature
 * Current relative humidity
 
+A separate plugin for Ambi Climate is available - [homebridge-ambiclimate](https://www.npmjs.com/package/homebridge-ambiclimate) exposes Ambi Climate devices as Temperature Sensor, Humidity Sensor, and Switch services within Homekit.
+
 ## Installation
 
     npm install -g homebridge-ambiclimate-thermostat
