@@ -159,8 +159,10 @@ AmbiClimate.prototype = {
         break;
       case Characteristic.TargetHeatingCoolingState.COOL:
         this.log("setTargetHeatingCoolingState: Setting to Away Temperature Upper");
+        this.log("setTargetHeatingCoolingState: this.settings - " + JSON.stringify(this.settings));
         this.client.away_temperature_upper(this.settings)
           .then( (body) => {
+            this.log("setTargetHeatingCoolingState: body - " + JSON.stringify(body));
             callback(null, body);
           })
           .catch( (reason) => {
@@ -235,18 +237,27 @@ AmbiClimate.prototype = {
         switch(mode) {
           case "Temperature":
             this.client.temperature(this.client.settings)
+              .then( (body) => {
+                callback(null, body);
+              })
               .catch( (reason) => {
                 callback(reason);
               });
               break;
           case "Away_Temperature_Upper":
             this.client.away_temperature_upper(this.client.settings)
+              .then( (body) => {
+                callback(null, body);
+              })
               .catch( (reason) => {
                 callback(reason);
               });
             break;
           case "Away_Temperature_Lower":
             this.client.away_temperature_lower(this.client.settings)
+              .then( (body) => {
+                callback(null, body);
+              })
               .catch( (reason) => {
                 callback(reason);
               });
