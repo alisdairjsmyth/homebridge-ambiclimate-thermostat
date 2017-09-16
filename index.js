@@ -159,6 +159,7 @@ AmbiClimate.prototype = {
         break;
       case Characteristic.TargetHeatingCoolingState.COOL:
         this.log("setTargetHeatingCoolingState: Setting to Away Temperature Upper");
+        this.settings.value = 22;
         this.log("setTargetHeatingCoolingState: this.settings - " + JSON.stringify(this.settings));
         this.client.away_temperature_upper(this.settings)
           .then( (body) => {
@@ -171,8 +172,11 @@ AmbiClimate.prototype = {
         break;
       case Characteristic.TargetHeatingCoolingState.HEAT:
         this.log("setTargetHeatingCoolingState: Setting to Away Temperature Lower");
+        this.settings.value = 22;
+        this.log("setTargetHeatingCoolingState: this.settings - " + JSON.stringify(this.settings));
         this.client.away_temperature_lower(this.settings)
           .then( (body) => {
+            this.log("setTargetHeatingCoolingState: body - " + JSON.stringify(body));
             callback(null, body);
           })
           .catch( (reason) => {
@@ -316,6 +320,6 @@ AmbiClimate.prototype = {
       .setCharacteristic(Characteristic.Model, "Ambi Climate Thermostat")
       .setCharacteristic(Characteristic.SerialNumber, " ");
 
-    return [this.thermostatService];
+    return [this.thermostatService, this.informationService];
   }
 }
