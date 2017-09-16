@@ -145,6 +145,7 @@ AmbiClimate.prototype = {
   // HEAT -> Away Temperature Lower
   //
   setTargetHeatingCoolingState: function(value, callback) {
+    this.log("setTargetHeatingCoolingState: Received value - " + value);
     switch(value) {
       case Characteristic.TargetHeatingCoolingState.AUTO:
         this.log("setTargetHeatingCoolingState: Setting to Comfort");
