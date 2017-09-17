@@ -38,6 +38,7 @@ function AmbiClimate(log, config) {
   this.settings.location_name = config.locationName;
 
   // Default temperature in Celsius
+  this.default                = {};
   this.default.temperature    = 22;
 
   this.client = new ambi(config.clientId, config.clientSecret, config.username, config.password);
