@@ -37,6 +37,9 @@ function AmbiClimate(log, config) {
   this.settings.room_name     = config.roomName;
   this.settings.location_name = config.locationName;
 
+  // Default temperature in Celsius
+  this.default.temperature    = 22;
+
   this.client = new ambi(config.clientId, config.clientSecret, config.username, config.password);
 
   // Object to maintain the state of the device.  This is done as there is
@@ -159,7 +162,7 @@ AmbiClimate.prototype = {
           });
         break;
       case Characteristic.TargetHeatingCoolingState.COOL:
-        this.settings.value = 22;
+        this.settings.value = this.default.temperature;
         this.log("setTargetHeatingCoolingState: Setting to Away Temperature Upper @ "+this.settings.value);
         this.client.away_temperature_upper(this.settings)
           .then( (body) => {
@@ -170,7 +173,7 @@ AmbiClimate.prototype = {
           });
         break;
       case Characteristic.TargetHeatingCoolingState.HEAT:
-        this.settings.value = 22;
+        this.settings.value = this.default.temperature;
         this.log("setTargetHeatingCoolingState: Setting to Away Temperature Lower @ "+this.settings.value);
         this.client.away_temperature_lower(this.settings)
           .then( (body) => {
@@ -191,7 +194,7 @@ AmbiClimate.prototype = {
           });
         break;
     }
-    this.thermostatService.setCharacteristic(Characteristic.TargetTemperature, 22);
+    this.thermostatService.setCharacteristic(Characteristic.TargetTemperature, this.default.temperature);
   },
 
   getCurrentTemperature: function(callback) {
@@ -219,8 +222,8 @@ AmbiClimate.prototype = {
             this.log("getTargetTemperature: Target temperature - " + modeTemp);
             break;
           default:
-            callback(null, 22);
-            this.log("getTargetTemperature: Target temperature - 22");
+            callback(null, this.default.temperature);
+            this.log("getTargetTemperature: Target temperature - "+this.default.temperature);
             break;
         }
       })
