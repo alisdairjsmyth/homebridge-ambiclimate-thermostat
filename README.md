@@ -8,6 +8,11 @@
 * Current temperature
 * Target temperature
 * Current relative humidity
+* Current Fan state (Implementation of Fan V2 Service)
+
+Each physical device appears within HomeKit Apps as two logical devices with the same name:
+* Thermostat
+* Fan
 
 A Homekit Thermostat supports 4 states:
 * OFF: is mapped to the Ambi Climate's Off mode;
@@ -54,4 +59,4 @@ Separate homebridge accessories can be defined for each Ambi Climate device to b
 
 ## To Do
 * Refactor to a Platform plugin.  This is predicated on Ambi Labs exposing a capability in their public API to retrieve all devices installed in a given location.
-* Implement Fan Service. This is predicated on Ambi Labs exposing a capability in their public API to get and set fan state.
+* Implement Fan Service set capabilities. This is predicated on Ambi Labs exposing a capability in their public API to set fan state.
