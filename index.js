@@ -51,6 +51,7 @@ function AmbiClimate(log, config) {
   this.state.on           = false;
 
   this.thermostatService  = new Service.Thermostat(this.name);
+  this.fanService         = new Service.Fanv2(this.name);
   this.informationService = new Service.AccessoryInformation();
 }
 
@@ -299,6 +300,99 @@ AmbiClimate.prototype = {
         callback(reason);
       });
   },
+  getActive: function(callback) {
+    this.client.mode(this.settings)
+      .then( (data) => {
+        switch (data.mode) {
+          case "Off":
+          case "Manual":
+            callback(null, Characteristic.Active.INACTIVE);
+            break;
+          default:
+            callback(null, Characteristic.Active.ACTIVE);
+            break;
+        }
+      })
+      .catch( (reason) => {
+        callback(reason);
+      })
+  },
+  // The states returned by appliance_states do not reflect the current state
+  // of the air conditioner if it is off.  As a consequence we first check the
+  // Ambi Climate mode, and only retrieve appliance states when the mode is
+  // neither Off or Manual.
+  getRotationSpeed: function(callback) {
+    this.client.mode(this.settings)
+      .then( (data) => {
+        switch (data.mode) {
+          case "Off":
+          case "Manual":
+            callback(null, 0);
+            break;
+          default:
+            this.client.appliance_states(this.settings)
+              .then( (data) => {
+                var rotationSpeed;
+                switch (data.data[0].fan) {
+                  case "High":
+                    rotationSpeed = 100;
+                    break;
+                  case "Med-High":
+                    rotationSpeed = 75;
+                    break;
+                  case "Auto":
+                  case "Med":
+                    rotationSpeed = 50;
+                    break;
+                  case "Quiet":
+                  case "Med-Low":
+                    rotationSpeed = 25;
+                    break;
+                  case "Low":
+                  default:
+                    rotationSpeed = 0;
+                    break;
+                }
+                callback(null, rotationSpeed);
+              })
+            break;
+        }
+      })
+      .catch( (reason) => {
+        callback(reason);
+      })
+  },
+  // As per logic in getRotationSpeed, only retrieve appliance states if the
+  // Ambi Climate mode is neither Off or Manual.
+  getSwingMode: function(callback) {
+    this.client.mode(this.settings)
+      .then( (data) => {
+        switch (data.mode) {
+          case "Off":
+          case "Manual":
+            callback(null, Characteristic.SwingMode.SWING_DISABLED)
+            break;
+          default:
+            this.client.appliance_states(this.settings)
+              .then( (data) => {
+                var rotationSpeed;
+                switch (data.data[0].swing) {
+                  case "Oscillate":
+                    callback(null, Characteristic.SwingMode.SWING_ENABLED)
+                    break;
+                  case "Off":
+                  default:
+                    callback(null, Characteristic.SwingMode.SWING_DISABLED)
+                    break;
+                }
+              })
+            break;
+        }
+      })
+      .catch( (reason) => {
+        callback(reason);
+      })
+  },
 
   //
   // Services
@@ -324,11 +418,32 @@ AmbiClimate.prototype = {
     this.thermostatService.getCharacteristic(Characteristic.CurrentRelativeHumidity)
       .on('get', this.getCurrentRelativeHumidity.bind(this));
 
+    this.fanService.getCharacteristic(Characteristic.Active)
+      .on('get', function(callback) {
+        this.getActive(function(error,data) {
+          callback(error, data);
+        }.bind(this))
+      }.bind(this))
+
+    this.fanService.getCharacteristic(Characteristic.RotationSpeed)
+      .on('get', function(callback) {
+        this.getRotationSpeed(function(error,data) {
+          callback(error, data);
+        }.bind(this))
+      }.bind(this))
+
+    this.fanService.getCharacteristic(Characteristic.SwingMode)
+      .on('get', function(callback) {
+        this.getSwingMode(function(error,data) {
+          callback(error,data);
+        }.bind(this))
+      }.bind(this))
+
     this.informationService
       .setCharacteristic(Characteristic.Manufacturer, "Ambi Labs")
       .setCharacteristic(Characteristic.Model, "Ambi Climate Thermostat")
       .setCharacteristic(Characteristic.SerialNumber, " ");
 
-    return [this.thermostatService, this.informationService];
+    return [this.thermostatService, this.informationService, this.fanService];
   }
 }
