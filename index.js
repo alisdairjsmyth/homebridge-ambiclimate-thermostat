@@ -346,9 +346,11 @@ AmbiClimate.prototype = {
                     break;
                   case "Quiet":
                   case "Med-Low":
-                    rotationSpeed = 25;
+                    rotationSpeed = 38;
                     break;
                   case "Low":
+                    rotationSpeed = 25;
+                    break;
                   default:
                     rotationSpeed = 0;
                     break;
