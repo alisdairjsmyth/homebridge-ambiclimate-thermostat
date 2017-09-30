@@ -51,7 +51,7 @@ function AmbiClimate(log, config) {
   this.state.on           = false;
 
   this.thermostatService  = new Service.Thermostat(this.name);
-  this.fanService         = new Service.Fanv2(this.name);
+  this.fanService         = new Service.Fan(this.name);
   this.informationService = new Service.AccessoryInformation();
 }
 
@@ -362,37 +362,6 @@ AmbiClimate.prototype = {
         callback(reason);
       })
   },
-  // As per logic in getRotationSpeed, only retrieve appliance states if the
-  // Ambi Climate mode is neither Off or Manual.
-  getSwingMode: function(callback) {
-    this.client.mode(this.settings)
-      .then( (data) => {
-        switch (data.mode) {
-          case "Off":
-          case "Manual":
-            callback(null, Characteristic.SwingMode.SWING_DISABLED)
-            break;
-          default:
-            this.client.appliance_states(this.settings)
-              .then( (data) => {
-                var rotationSpeed;
-                switch (data.data[0].swing) {
-                  case "Oscillate":
-                    callback(null, Characteristic.SwingMode.SWING_ENABLED)
-                    break;
-                  case "Off":
-                  default:
-                    callback(null, Characteristic.SwingMode.SWING_DISABLED)
-                    break;
-                }
-              })
-            break;
-        }
-      })
-      .catch( (reason) => {
-        callback(reason);
-      })
-  },
 
   //
   // Services
@@ -418,7 +387,7 @@ AmbiClimate.prototype = {
     this.thermostatService.getCharacteristic(Characteristic.CurrentRelativeHumidity)
       .on('get', this.getCurrentRelativeHumidity.bind(this));
 
-    this.fanService.getCharacteristic(Characteristic.Active)
+    this.fanService.getCharacteristic(Characteristic.On)
       .on('get', function(callback) {
         this.getActive(function(error,data) {
           callback(error, data);
@@ -432,18 +401,11 @@ AmbiClimate.prototype = {
         }.bind(this))
       }.bind(this))
 
-    this.fanService.getCharacteristic(Characteristic.SwingMode)
-      .on('get', function(callback) {
-        this.getSwingMode(function(error,data) {
-          callback(error,data);
-        }.bind(this))
-      }.bind(this))
-
     this.informationService
       .setCharacteristic(Characteristic.Manufacturer, "Ambi Labs")
       .setCharacteristic(Characteristic.Model, "Ambi Climate Thermostat")
       .setCharacteristic(Characteristic.SerialNumber, " ");
 
-    return [this.thermostatService, this.informationService, this.fanService];
+    return [this.thermostatService, this.fanService, this.informationService];
   }
 }

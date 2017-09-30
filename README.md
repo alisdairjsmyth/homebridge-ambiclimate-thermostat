@@ -8,7 +8,7 @@
 * Current temperature
 * Target temperature
 * Current relative humidity
-* Current Fan state (Implementation of Fan V2 Service)
+* Current Fan state (Implementation of Fan Service)
 
 Each physical device appears within HomeKit Apps as two logical devices with the same name:
 * Thermostat
