@@ -28,7 +28,7 @@ A separate plugin for Ambi Climate is available - [homebridge-ambiclimate](https
 
 This plugin augments a pre-existing implementation of [homebridge](https://www.npmjs.com/package/homebridge).  Refer to [nfarina/homebridge](https://www.npmjs.com/package/homebridge) for installation instructions.
 
-Register a OAuth Client in the <a href="https://api.ambiclimate.com/" target="_new">Ambi Dev Portal</a> for each Ambi Climate device by following the steps on the Quick Start page.  You require the Client Id and Client Secret of that client in order to use this wrapper.
+Register a OAuth Client in the <a href="https://api.ambiclimate.com/" target="_new">Ambi Dev Portal</a> for each Ambi Climate device by following the steps on the [Quick Start page](https://api.ambiclimate.com/doc/quickstart).  You require the Client Id and Client Secret of that client in order to use this wrapper.
 
 Update your homebridge configuration file (as below).
 
