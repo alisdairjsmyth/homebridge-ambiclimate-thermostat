@@ -16,8 +16,8 @@ Each physical device appears within HomeKit Apps as two logical devices with the
 
 A Homekit Thermostat supports 4 states:
 * OFF: is mapped to the Ambi Climate's Off mode;
-* COOL: is mapped to the Away Temperature Lower mode i.e. keep the temperature below the set temperature;
-* HEAT: is mapped to the Away Temperature Upper mode i.e. keep the temperature above the set temperature;
+* COOL: is mapped to the Away Temperature Upper mode i.e. keep the temperature below the set temperature;
+* HEAT: is mapped to the Away Temperature Lower mode i.e. keep the temperature above the set temperature;
 * AUTO: is mapped to the Comfort mode.  In this mode the Homekit temperature setting has no influence.
 
 A separate plugin for Ambi Climate is available - [homebridge-ambiclimate](https://www.npmjs.com/package/homebridge-ambiclimate) exposes Ambi Climate devices as Temperature Sensor, Humidity Sensor, and Switch services within Homekit.
